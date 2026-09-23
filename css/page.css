@@ -121,6 +121,11 @@ footer{padding:54px 0 64px;border-top:1px solid var(--rule);text-align:center}
 .footlinks a{text-decoration:none;color:var(--ink-soft)}
 .footlinks a:hover{color:var(--accent)}
 .legal{margin-top:20px;font-size:12.5px;color:var(--ink-faint)}
+.social{display:flex;justify-content:center;align-items:center;gap:18px;margin:16px 0 2px}
+.social a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;
+  color:var(--ink-faint);background:none;transition:color .3s ease}
+.social a:hover,.social a:focus-visible{color:var(--accent)}
+.social svg{width:20px;height:20px;display:block}
 
 :focus-visible{outline:2px solid var(--accent-bright);outline-offset:3px;border-radius:4px}
 .rv{opacity:0;transform:translateY(22px);filter:blur(5px);

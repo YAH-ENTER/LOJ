@@ -341,6 +341,11 @@ footer{padding:54px 0 64px;border-top:1px solid var(--rule);text-align:center}
   74.5%{opacity:1}
 }
 .legal{margin-top:20px;font-size:12.5px;color:var(--ink-faint)}
+.social{display:flex;justify-content:center;align-items:center;gap:18px;margin:16px 0 2px}
+.social a{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;
+  color:var(--ink-faint);background:none;transition:color .3s ease}
+.social a:hover,.social a:focus-visible{color:var(--accent)}
+.social svg{width:20px;height:20px;display:block}
 
 /* theme swap: hold the heavy compositing layers still while colours cross over */
 :root.swapping .btn.primary::before,:root.swapping .btn.primary::after,:root.swapping .halo{opacity:0}
@@ -482,6 +487,17 @@ footer{padding:54px 0 64px;border-top:1px solid var(--rule);text-align:center}
   <div class="wrap">
     <p class="footbrand">Yahshua Marketing — Yahshua Enterprises, LLC</p>
     <p class="legal" style="margin-top:14px">Service areas: <a href="/marketing-agency-warrenton-va/">Warrenton</a> &nbsp;·&nbsp; <a href="/marketing-agency-tysons-corner-va/">Tysons Corner</a></p>
+    <div class="social">
+      <a href="https://www.facebook.com/profile.php?id=61594435331467" target="_blank" rel="noopener" aria-label="Yahshua Marketing on Facebook">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <a href="https://www.instagram.com/yahshuaenterprises.marketing/" target="_blank" rel="noopener" aria-label="Yahshua Marketing on Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 2.75h9a4.75 4.75 0 0 1 4.75 4.75v9a4.75 4.75 0 0 1-4.75 4.75h-9A4.75 4.75 0 0 1 2.75 16.5v-9A4.75 4.75 0 0 1 7.5 2.75Z"/><path d="M12 8.25A3.75 3.75 0 1 1 8.25 12 3.75 3.75 0 0 1 12 8.25Z"/><path d="M17.25 6.75h.01"/></svg>
+      </a>
+      <a href="https://x.com/yahshua_enter" target="_blank" rel="noopener" aria-label="Yahshua Marketing on X">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 4.5L19.5 19.5M19.5 4.5L4.5 19.5"/></svg>
+      </a>
+    </div>
     <p class="credit"><span class="tag">&lt;credit&gt;</span> <a class="lit" href="https://www.kingjamesbibleonline.org/Colossians-Chapter-1/#16" target="_blank" rel="noopener">Colossians 1:16. KJV.</a> <span class="tag">&lt;/credit&gt;</span></p>
     <p class="legal">© <span id="yr">2026</span> Yahshua Enterprises, LLC. All rights reserved.</p>
   </div>
