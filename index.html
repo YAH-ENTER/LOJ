@@ -220,6 +220,8 @@ section{background:var(--bg);color:var(--ink)}
 .mark img{width:100%;backface-visibility:hidden;transform:translateZ(0);opacity:0;transform:translateY(18px) scale(.985);filter:blur(7px)}
 .mark img.gold{opacity:0}
 .mark .gold{position:absolute;inset:0}
+/* light-mode mark: the gold art is near-white against the light background */
+.mark img.gold{filter:brightness(.5) saturate(1.12)!important}
 .hero h1{font-family:"Inter Tight",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-weight:600;font-size:clamp(1.9rem,5.4vw,3.35rem);line-height:1.06;
   letter-spacing:-.036em;text-align:center;margin:40px auto 0;max-width:15ch}
 .hero h1 .shine{position:relative;display:inline-block;color:var(--accent);transition:filter .3s ease;
