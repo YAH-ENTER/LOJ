@@ -269,8 +269,10 @@ section{background:var(--bg);color:var(--ink)}
     inset 0 -1px 0 var(--btn-rim),
     0 1px 1px var(--btn-cast)}
 .btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
-.scrollhint{margin-top:56px;text-align:center;color:var(--ink-faint);font-size:12.5px;letter-spacing:.24em}
-.scrollhint span{display:block;width:1px;height:40px;margin:12px auto 0;background:linear-gradient(var(--rule-gold),transparent)}
+.scrollhint{margin-top:clamp(92px,13vh,168px);text-align:center;color:var(--ink-soft);font-size:12.5px;letter-spacing:.24em;
+  opacity:0;transform:translateY(12px);transition:opacity 1s ease,transform 1s cubic-bezier(.16,.7,.24,1)}
+.scrollhint.sh-in{opacity:1;transform:none}
+.scrollhint span{display:block;width:1px;height:56px;margin:14px auto 0;background:linear-gradient(var(--accent),transparent)}
 
 /* ── sections ──────────────────────────── */
 section{padding:clamp(76px,11vw,140px) 0;position:relative;background:var(--bg);color:var(--ink)}
@@ -403,7 +405,7 @@ footer{padding:54px 0 64px;border-top:1px solid var(--rule);text-align:center}
     <div class="herocta rv">
       <a class="btn primary" data-cta="hero" href="https://yahshuamarketing.setmore.com/services/ade5aaf0-5753-48b1-9a92-2909e3883825" target="_blank" rel="noopener">Book a consultation</a>
     </div>
-    <p class="scrollhint rv">WHAT WE DO<span></span></p>
+    <p class="scrollhint">WHAT WE DO<span></span></p>
   </div>
 </section>
 
@@ -610,6 +612,20 @@ footer{padding:54px 0 64px;border-top:1px solid var(--rule);text-align:center}
   new MutationObserver(paint).observe(root,{attributes:true,attributeFilter:['data-theme']});
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){paint();tc();});
 })();
+
+  // scroll hint: hold it back until the reader starts moving
+  (function(){
+    var hint=document.querySelector(".scrollhint");
+    if(!hint) return;
+    var shown=false,tick=false;
+    function check(){
+      tick=false;
+      var on=(window.pageYOffset||document.documentElement.scrollTop)>40;
+      if(on!==shown){ shown=on; hint.classList.toggle("sh-in",on); }
+    }
+    addEventListener("scroll",function(){if(!tick){tick=true;requestAnimationFrame(check);}},{passive:true});
+    check();
+  })();
 </script>
 </body>
 </html>
