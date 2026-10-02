@@ -7,6 +7,9 @@
   "use strict";
 
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Phones get no page transition: mobile browsers layer their own navigation
+  // animation on top, and the two together look like a double load.
+  var touch = matchMedia("(hover: none) and (pointer: coarse)").matches;
   // Chrome/Edge/Safari 18.2+ run the page change themselves via @view-transition.
   // Where they do, this file adds no arrival animation — a second one on top of
   // the browser's reads as a stutter, especially on phones.
@@ -70,7 +73,7 @@
 
     /* ---------------- arrival ---------------- */
     // Same rule on the scripted path: a reload or a back/forward just appears.
-    if (!nativeVT && !reduce && canAnimate && !isRevisit(navType())) {
+    if (!nativeVT && !reduce && !touch && canAnimate && !isRevisit(navType())) {
       var main = document.querySelector("main");
       if (main) {
         main.animate(
@@ -104,7 +107,7 @@
              a.target !== "_blank" && !a.hash;
     }
 
-    if (!nativeVT && !reduce) {
+    if (!nativeVT && !reduce && !touch) {
       document.addEventListener("click", function (e) {
         if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
         var a = e.target.closest("a");
@@ -177,7 +180,7 @@
         e.preventDefault();
         var href = btn.href;
         glitch(btn, function () {
-          if (nativeVT) location.href = href;
+          if (nativeVT || touch) location.href = href;
           else leave(href);
         });
       });

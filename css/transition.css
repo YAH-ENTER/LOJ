@@ -34,6 +34,13 @@
 .btn.primary::before{ will-change: auto; }   /* nothing here animates transform */
 .btn.primary::after{ inset: 0; }
 
+/* Phones: no page transition at all. Mobile browsers were running their own
+   navigation animation on top of this one, which read as the page loading
+   twice. Desktop keeps the transition. */
+@media (hover: none) and (pointer: coarse){
+  @view-transition { navigation: none; }
+}
+
 @media (hover: none) and (pointer: coarse){
   /* the moving glare bar: the thing that escapes the pill */
   .btn.primary::before{ display: none; }
