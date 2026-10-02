@@ -25,13 +25,30 @@
   opacity:0; transform:translateX(-4vw);
 }
 
-/* ---- 3. Keep the gold button's glare inside its pill ----
-   iOS Safari does not reliably clip a composited child to a rounded
-   overflow:hidden box, so the skewed glare bar escapes as a rectangle.
-   clip-path is honored there; the rim is pulled in to sit inside it. */
+/* ---- 3. Gold clipping on phones ----
+   Both the gold word and the gold button paint a gradient and then clip it —
+   to the glyphs, to the pill. Mobile browsers drop that clip once a filter or
+   a composited layer is involved, and the uncut gradient shows as a rectangle.
+   Desktop keeps the full effect; touch devices get the flat gold underneath. */
 .btn.primary{ clip-path: inset(0 round 999px); }
 .btn.primary::before{ will-change: auto; }   /* nothing here animates transform */
 .btn.primary::after{ inset: 0; }
+
+@media (hover: none) and (pointer: coarse){
+  /* the moving glare bar: the thing that escapes the pill */
+  .btn.primary::before{ display: none; }
+  .btn.primary::after{ display: none; }
+
+  /* "your": solid gold instead of gradient-through-glyphs */
+  .hero h1 .shine{
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: currentColor;
+    color: var(--accent-bright);
+    filter: none;
+  }
+}
 
 /* ---- 4. CTA glitch ---- */
 .ym-label{ position:relative; display:inline-block; }
