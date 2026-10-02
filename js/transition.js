@@ -18,6 +18,33 @@
     else document.addEventListener("DOMContentLoaded", fn);
   }
 
+  // How did we get here? A reload or a back/forward should look instant —
+  // animating those reads as the page loading twice. Only a fresh navigation
+  // to a different page earns a transition.
+  function navType() {
+    try {
+      if (window.navigation && navigation.activation && navigation.activation.navigationType) {
+        return navigation.activation.navigationType;        // push | replace | reload | traverse
+      }
+      var e = performance.getEntriesByType("navigation")[0];
+      return e ? e.type : "navigate";                       // navigate | reload | back_forward
+    } catch (err) { return "navigate"; }
+  }
+  function isRevisit(t) {
+    return t === "reload" || t === "traverse" || t === "back_forward";
+  }
+
+  // Native path: cancel the browser's own transition on reload/back/forward.
+  // pagereveal fires before the incoming page paints, so nothing flashes first.
+  addEventListener("pagereveal", function (e) {
+    if (e.viewTransition && isRevisit(navType())) e.viewTransition.skipTransition();
+  });
+  addEventListener("pageswap", function (e) {
+    if (e.viewTransition && e.activation && isRevisit(e.activation.navigationType)) {
+      e.viewTransition.skipTransition();
+    }
+  });
+
   ready(function () {
     var EASE_IN  = "cubic-bezier(.16,.7,.24,1)";
     var EASE_OUT = "cubic-bezier(.4,0,1,1)";
@@ -42,7 +69,8 @@
     }
 
     /* ---------------- arrival ---------------- */
-    if (!nativeVT && !reduce && canAnimate) {
+    // Same rule on the scripted path: a reload or a back/forward just appears.
+    if (!nativeVT && !reduce && canAnimate && !isRevisit(navType())) {
       var main = document.querySelector("main");
       if (main) {
         main.animate(

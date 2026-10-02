@@ -25,7 +25,15 @@
   opacity:0; transform:translateX(-4vw);
 }
 
-/* ---- 3. CTA glitch ---- */
+/* ---- 3. Keep the gold button's glare inside its pill ----
+   iOS Safari does not reliably clip a composited child to a rounded
+   overflow:hidden box, so the skewed glare bar escapes as a rectangle.
+   clip-path is honored there; the rim is pulled in to sit inside it. */
+.btn.primary{ clip-path: inset(0 round 999px); }
+.btn.primary::before{ will-change: auto; }   /* nothing here animates transform */
+.btn.primary::after{ inset: 0; }
+
+/* ---- 4. CTA glitch ---- */
 .ym-label{ position:relative; display:inline-block; }
 
 /* Two offset copies of the label, clipped to bands: a broken-signal split. */

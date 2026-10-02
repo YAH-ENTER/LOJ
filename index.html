@@ -370,6 +370,7 @@ footer{padding:54px 0 64px;border-top:1px solid var(--rule);text-align:center}
 }
 </style>
 <link rel="stylesheet" href="/css/transition.css">
+<script>/* a reload or back/forward should not animate: it reads as a double load */try{var ymN=(window.navigation&&navigation.activation&&navigation.activation.navigationType)||(performance.getEntriesByType("navigation")[0]||{}).type;if(ymN==="reload"||ymN==="traverse"||ymN==="back_forward"){document.head.insertAdjacentHTML("beforeend","<style>@view-transition{navigation:none}</style>")}}catch(e){}</script>
 <noscript><style>.rv{opacity:1;transform:none;filter:none}</style></noscript>
 <script>/* if the reveal never runs, show the page anyway */setTimeout(function(){var a=document.querySelectorAll(".rv");if(a.length&&!document.querySelector(".rv.in")){Array.prototype.forEach.call(a,function(e){e.style.transition="none";e.classList.add("in")})}},2000)</script>
 </head>
