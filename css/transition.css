@@ -1,79 +1,87 @@
 /* ============================================================
-   Page transitions + CTA glitch — prototype layer
-   Loads after the page's own styles, adds nothing to the markup.
+   Page transitions + CTA glitch
+   No library. The button's own ::before/::after are left alone —
+   they draw the glare and the rim that masks it.
    ============================================================ */
 
-/* ---- 1. Cross-document view transitions (Chrome/Edge today) ---- */
+/* ---- 1. Cross-document view transitions (Chrome/Edge, Safari 18.2+) ---- */
 @view-transition { navigation: auto; }
 
-/* The page body: old one sinks and fades, new one rises in.
-   Short out, longer in — the arrival should feel settled, not rushed. */
-::view-transition-old(root){
-  animation: ym-leave .26s cubic-bezier(.4,0,1,1) both;
-}
-::view-transition-new(root){
-  animation: ym-enter .46s cubic-bezier(.16,.7,.24,1) both;
-}
-@keyframes ym-leave{
-  to{ opacity:0; transform:translateY(-14px) scale(.994); filter:blur(3px); }
-}
-@keyframes ym-enter{
-  from{ opacity:0; transform:translateY(18px) scale(1.006); filter:blur(5px); }
-}
+::view-transition-old(root){ animation: ym-leave .26s cubic-bezier(.4,0,1,1) both; }
+::view-transition-new(root){ animation: ym-enter .42s cubic-bezier(.16,.7,.24,1) both; }
+@keyframes ym-leave{ to{ opacity:0; transform:translateY(-12px) scale(.995); } }
+@keyframes ym-enter{ from{ opacity:0; transform:translateY(16px) scale(1.005); } }
 
 /* The header holds still while the body changes underneath it. */
 .nav{ view-transition-name: ym-nav; }
 ::view-transition-old(ym-nav),
-::view-transition-new(ym-nav){ animation:none; mix-blend-mode:normal; }
+::view-transition-new(ym-nav){ animation:none; }
 
-/* A gold edge wipes across at the seam between the two pages. */
-::view-transition-group(root){ isolation:isolate; }
-html::view-transition::after{ content:""; }
+/* ---- 2. The gold edge, only on the scripted fallback path ---- */
 .ym-wipe{
-  position:fixed; inset:0 auto 0 0; width:2px; z-index:9999; pointer-events:none;
+  position:fixed; top:0; bottom:0; left:0; width:2px; z-index:9999; pointer-events:none;
   background:linear-gradient(180deg,transparent,var(--accent,#D8B068),transparent);
   box-shadow:0 0 22px 4px rgba(216,176,104,.45);
   opacity:0; transform:translateX(-4vw);
 }
 
-/* ---- 2. Fallback for browsers without view transitions ---- */
-/* The script fades the page out before navigating and in on arrival. */
-.ym-fallback main{ will-change: opacity, transform; }
-
 /* ---- 3. CTA glitch ---- */
-.ym-glitch{ position:relative; }
-.ym-glitch .ym-label{ position:relative; display:inline-block; }
+.ym-label{ position:relative; display:inline-block; }
 
-/* Two offset copies of the label, one cyan, one magenta, clipped to bands. */
-.ym-glitch .ym-label::before,
-.ym-glitch .ym-label::after{
+/* Two offset copies of the label, clipped to bands: a broken-signal split. */
+.ym-label::before,
+.ym-label::after{
   content:attr(data-text);
   position:absolute; left:0; top:0; width:100%;
   pointer-events:none; opacity:0;
 }
-.ym-glitch .ym-label::before{
-  color:#00E5FF; transform:translate3d(var(--gx1,0),0,0);
-  clip-path:inset(var(--gc1,0) 0 var(--gc2,70%) 0);
-}
-.ym-glitch .ym-label::after{
-  color:#FF0048; transform:translate3d(var(--gx2,0),0,0);
-  clip-path:inset(var(--gc3,55%) 0 var(--gc4,0) 0);
-}
-.ym-glitch.is-glitching .ym-label::before,
-.ym-glitch.is-glitching .ym-label::after{ opacity:.85; }
+.ym-label::before{ color:#00E5FF; }
+.ym-label::after{ color:#FF0048; }
 
-/* Scanline sweep across the button while it stutters. */
-.ym-glitch::after{
-  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.16) 0 1px,transparent 1px 3px);
+.is-glitching .ym-label::before{ animation: ym-split-a .34s steps(1,end) both; }
+.is-glitching .ym-label::after { animation: ym-split-b .34s steps(1,end) both; }
+.is-glitching .ym-label        { animation: ym-stutter .34s steps(1,end) both; }
+
+@keyframes ym-split-a{
+  0%  { opacity:.9; transform:translateX(-4px); clip-path:inset(0 0 68% 0); }
+  28% { opacity:.9; transform:translateX(3px);  clip-path:inset(34% 0 42% 0); }
+  58% { opacity:.9; transform:translateX(-2px); clip-path:inset(8% 0 70% 0); }
+  85% { opacity:.6; transform:translateX(1px);  clip-path:inset(0 0 74% 0); }
+  100%{ opacity:0;  transform:none; }
+}
+@keyframes ym-split-b{
+  0%  { opacity:.9; transform:translateX(5px);  clip-path:inset(56% 0 0 0); }
+  28% { opacity:.9; transform:translateX(-3px); clip-path:inset(48% 0 16% 0); }
+  58% { opacity:.9; transform:translateX(2px);  clip-path:inset(66% 0 4% 0); }
+  85% { opacity:.6; transform:translateX(-1px); clip-path:inset(52% 0 0 0); }
+  100%{ opacity:0;  transform:none; }
+}
+@keyframes ym-stutter{
+  0%  { transform:translateX(-3px) skewX(-6deg); }
+  18% { transform:translateX(4px)  skewX(5deg); }
+  40% { transform:translateX(-2px) skewX(-3deg); }
+  62% { transform:translateX(2px)  skewX(2deg); }
+  100%{ transform:none; }
+}
+
+/* Scanline sweep. Its own element: the button's pseudo-elements are spoken for. */
+.ym-scan{
+  position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 1px,transparent 1px 3px);
   opacity:0; mix-blend-mode:overlay;
 }
-.ym-glitch.is-glitching::after{ opacity:1; }
+.is-glitching .ym-scan{ animation: ym-scan .34s linear both; }
+@keyframes ym-scan{
+  0%,100%{ opacity:0; }
+  10%,70%{ opacity:1; }
+}
 
 @media (prefers-reduced-motion: reduce){
   ::view-transition-old(root),
   ::view-transition-new(root){ animation-duration:.01ms; }
-  .ym-glitch.is-glitching .ym-label::before,
-  .ym-glitch.is-glitching .ym-label::after,
-  .ym-glitch.is-glitching::after{ opacity:0; }
+  .is-glitching .ym-label,
+  .is-glitching .ym-label::before,
+  .is-glitching .ym-label::after,
+  .is-glitching .ym-scan{ animation:none; opacity:0; }
+  .is-glitching .ym-label{ opacity:1; }
 }
