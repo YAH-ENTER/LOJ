@@ -1,0 +1,79 @@
+/* ============================================================
+   Page transitions + CTA glitch — prototype layer
+   Loads after the page's own styles, adds nothing to the markup.
+   ============================================================ */
+
+/* ---- 1. Cross-document view transitions (Chrome/Edge today) ---- */
+@view-transition { navigation: auto; }
+
+/* The page body: old one sinks and fades, new one rises in.
+   Short out, longer in — the arrival should feel settled, not rushed. */
+::view-transition-old(root){
+  animation: ym-leave .26s cubic-bezier(.4,0,1,1) both;
+}
+::view-transition-new(root){
+  animation: ym-enter .46s cubic-bezier(.16,.7,.24,1) both;
+}
+@keyframes ym-leave{
+  to{ opacity:0; transform:translateY(-14px) scale(.994); filter:blur(3px); }
+}
+@keyframes ym-enter{
+  from{ opacity:0; transform:translateY(18px) scale(1.006); filter:blur(5px); }
+}
+
+/* The header holds still while the body changes underneath it. */
+.nav{ view-transition-name: ym-nav; }
+::view-transition-old(ym-nav),
+::view-transition-new(ym-nav){ animation:none; mix-blend-mode:normal; }
+
+/* A gold edge wipes across at the seam between the two pages. */
+::view-transition-group(root){ isolation:isolate; }
+html::view-transition::after{ content:""; }
+.ym-wipe{
+  position:fixed; inset:0 auto 0 0; width:2px; z-index:9999; pointer-events:none;
+  background:linear-gradient(180deg,transparent,var(--accent,#D8B068),transparent);
+  box-shadow:0 0 22px 4px rgba(216,176,104,.45);
+  opacity:0; transform:translateX(-4vw);
+}
+
+/* ---- 2. Fallback for browsers without view transitions ---- */
+/* The script fades the page out before navigating and in on arrival. */
+.ym-fallback main{ will-change: opacity, transform; }
+
+/* ---- 3. CTA glitch ---- */
+.ym-glitch{ position:relative; }
+.ym-glitch .ym-label{ position:relative; display:inline-block; }
+
+/* Two offset copies of the label, one cyan, one magenta, clipped to bands. */
+.ym-glitch .ym-label::before,
+.ym-glitch .ym-label::after{
+  content:attr(data-text);
+  position:absolute; left:0; top:0; width:100%;
+  pointer-events:none; opacity:0;
+}
+.ym-glitch .ym-label::before{
+  color:#00E5FF; transform:translate3d(var(--gx1,0),0,0);
+  clip-path:inset(var(--gc1,0) 0 var(--gc2,70%) 0);
+}
+.ym-glitch .ym-label::after{
+  color:#FF0048; transform:translate3d(var(--gx2,0),0,0);
+  clip-path:inset(var(--gc3,55%) 0 var(--gc4,0) 0);
+}
+.ym-glitch.is-glitching .ym-label::before,
+.ym-glitch.is-glitching .ym-label::after{ opacity:.85; }
+
+/* Scanline sweep across the button while it stutters. */
+.ym-glitch::after{
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.16) 0 1px,transparent 1px 3px);
+  opacity:0; mix-blend-mode:overlay;
+}
+.ym-glitch.is-glitching::after{ opacity:1; }
+
+@media (prefers-reduced-motion: reduce){
+  ::view-transition-old(root),
+  ::view-transition-new(root){ animation-duration:.01ms; }
+  .ym-glitch.is-glitching .ym-label::before,
+  .ym-glitch.is-glitching .ym-label::after,
+  .ym-glitch.is-glitching::after{ opacity:0; }
+}
